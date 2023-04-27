@@ -1,8 +1,8 @@
 import os
 import pathlib
 
-from database import SQLite
-from scraper import Scraper
+from utils.database import SQLite as Database
+from utils.scraper import Scraper as Scraper
 
 if __name__ == '__main__':
     database_path = str(pathlib.Path("src/database.sqlite3").absolute())
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     #temp
     values = ("2022-05-01 12:00:00", "2022-05-02", "entree", "Käsenudeln mit buntem Gemüse", "(2, 16, 17, c, g, i, a1)", "blaetter", 2.40, 3.00, 3.70, 2.60)
 
-    database = SQLite(database_path)
+    database = Database(database_path)
     #database.init_database()
 
     id = database.write_scraped_line(values)
