@@ -26,11 +26,6 @@ class SQLite():
     def close(self):
         self.__connection.close()
 
-    def __setConnection(self, connection=None):
-        if connection is None:
-            connection = self.__connection
-        return connection
-
     def read_sql_file(self, file, mode='r', encoding='utf-8'):
         file = open(file, mode, encoding=encoding)
         try:
@@ -39,22 +34,18 @@ class SQLite():
             file.close()
         return file_content
 
-    def execute(self, execution_statement, connection=None):
-        db_connection = self.__setConnection(connection=connection)
-        
-        db_cursor = db_connection.cursor()
+    def execute(self, execution_statement):        
+        db_cursor = self.__connection.cursor()
         return db_cursor.execute(execution_statement)
     
-    def write_data(self, sql_statement, values=None, connection=None):
-        db_connection = self.__setConnection(connection=connection)
-        
-        db_cursor = db_connection.cursor()
+    def write_data(self, sql_statement, values=None):        
+        db_cursor = self.__connection.cursor()
         if values is None:
             db_cursor.execute(sql_statement)
         else:
             db_cursor.execute(sql_statement, values)
-        db_connection.commit()
-        #results = db_connection.fetchall()
+        self.__connection.commit()
+        #results = self.__connection.fetchall()
         return db_cursor.lastrowid
     
     ##################################################################################################################################
@@ -63,22 +54,19 @@ class SQLite():
     #                                                                                                                                #
     ##################################################################################################################################
 
-    def truncate_database(self, connection=None):
+    def truncate_database(self):
         truncate_statement = self.read_sql_file("./src/backup/database/truncate_database.sql")
-        return self.execute(execution_statement=truncate_statement, connection=connection)
+        return self.execute(execution_statement=truncate_statement)
 
-    def init_database(self, connection=None):
+    def init_database(self):
         init_statement = self.read_sql_file("./src/backup/database/create_tables.sql")
-        self.truncate_database(connection)
-        return self.execute(execution_statement=init_statement, connection=connection)
+        self.truncate_database(self.__connection)
+        return self.execute(execution_statement=init_statement)
     
-    def readDataSetById(self, id, connection=None):
+    def readDataSetById(self, id):
         sql_statement = ''' SELECT * FROM results WHERE id=''' + str(id) + ''' '''
-        #return self.execute(execution_statement=sql_statement, connection=connection)
-        temp = self.execute(execution_statement=sql_statement, connection=connection)
-        print(temp)
-        return temp
+        return self.execute(execution_statement=sql_statement)p
     
-    def write_scraped_line(self, values, connection=None):
+    def write_scraped_line(self, values):
         sql_statement = ''' INSERT INTO results(scrapling_timestamp, intended_date, courses_type, label, ingredients, icons, price_students, price_staff, price_guests, price_special_fare) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '''
-        return self.write_data(sql_statement=sql_statement, values=values, connection=connection)
+        return self.write_data(sql_statement=sql_statement, values=values)
