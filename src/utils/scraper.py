@@ -39,9 +39,9 @@ class Scraper:
 
         # selection of the scraper lib
         if self.__scraper == self.__SCRAPER_LIB.URLLIB:
-            self.__html = self.__gethtmlByUrllib(url, decoding)
+            self.__html = self.__getHtmlByUrllib(url, decoding)
         elif self.__scraper == self.__SCRAPER_LIB.REQUESTS:
-            self.__html = self.__gethtmlByRequest(url, decoding)
+            self.__html = self.__getHtmlByRequest(url, decoding)
         else:
             raise NotImplementedError(NotImplementedErrorMessage)
             #exit()
@@ -56,7 +56,7 @@ class Scraper:
     #                                                                                                                                #
     ##################################################################################################################################
     
-    def __gethtmlByUrllib(self, url, decoding):
+    def __getHtmlByUrllib(self, url, decoding):
         page = urlopen(url)
         html_bytes = page.read()
         html = html_bytes.decode(decoding)
@@ -68,7 +68,7 @@ class Scraper:
     #                                                                                                                                #
     ##################################################################################################################################
     
-    def __gethtmlByRequest(self, url, decoding):
+    def __getHtmlByRequest(self, url, decoding):
         response = requests.get(url)
         if response.status_code != 200:
             print("Error fetching page")
