@@ -65,7 +65,7 @@ class SQLite():
     
     def readDataSetById(self, id):
         sql_statement = ''' SELECT * FROM results WHERE id=''' + str(id) + ''' '''
-        return self.execute(execution_statement=sql_statement)p
+        return self.execute(execution_statement=sql_statement)
     
     def write_scraped_line(self, values):
         sql_statement = ''' INSERT INTO results(scrapling_timestamp, intended_date, courses_type, label, ingredients, icons, price_students, price_staff, price_guests, price_special_fare) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '''
