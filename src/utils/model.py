@@ -142,7 +142,7 @@ class CannteenModel(Model):
     def convertToDict(self, json_object):
         return json.loads(json_object)
     
-    def fillFromDatabase(self, datarow):
+    def importFromDatabase(self, datarow):
         for key, value in datarow.items():
             if isinstance(value, int):
                 exec_command = 'self.%s = %d'
@@ -152,3 +152,16 @@ class CannteenModel(Model):
                 exec_command = 'self.%s = "%s"'
             
             exec(exec_command % (key, value))
+    
+    def exportToDatabase(self):
+        columns = ""
+        values = ""
+        
+        for key, value in self.__update_cannteen_object_linear().items():
+            if key is "id":
+                continue
+            columns = columns + str(key) + ", "
+            values = values + str(value) + ", "
+            
+        sql_statement = ''' INSERT INTO results(''' + columns[:-2] + ''') VALUES(''' + values[:-2] + ''') '''
+        return sql_statement
