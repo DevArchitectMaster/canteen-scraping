@@ -3,6 +3,8 @@ import enum
 import requests
 from urllib.request import urlopen
 
+NotImplementedErrorMessage = "\n\n\t\t\t### the selected scraper library is not available yet ###\t\t\n\t\t### please select an existing one from the enum '__SCRAPER_LIB' instead ###\t\t\n\n"
+
 class Scraper:
     class __SCRAPER_LIB(enum.Enum):
         URLLIB = "urllib"
@@ -37,9 +39,12 @@ class Scraper:
 
         # selection of the scraper lib
         if self.__scraper == self.__SCRAPER_LIB.URLLIB:
-          self.__html = self.__gethtmlByUrllib(url, decoding)
+            self.__html = self.__gethtmlByUrllib(url, decoding)
         elif self.__scraper == self.__SCRAPER_LIB.REQUESTS:
-          self.__html = self.__gethtmlByRequest(url, decoding)
+            self.__html = self.__gethtmlByRequest(url, decoding)
+        else:
+            raise NotImplementedError(NotImplementedErrorMessage)
+            #exit()
         
         return self.__html
 
