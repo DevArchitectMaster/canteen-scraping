@@ -7,6 +7,9 @@ class SQLite():
         self.__connection = self.connect(self.__database)
         self.__cursor = self.__connection.cursor()
 
+    def __del__(self):
+        self.close()
+
     def connect(self, database=None):
         """ create a database connection to the SQLite database specified by db_file
         :param db_file: database file
@@ -32,6 +35,8 @@ class SQLite():
         file = open(file, mode, encoding=encoding)
         try:
             file_content = str(file.read())
+        except OSError as e:
+            print(e)
         finally:
             file.close()
         return file_content
@@ -56,12 +61,14 @@ class SQLite():
 
     def truncate_database(self):
         truncate_statement = self.read_sql_file("./src/backup/database/truncate_database.sql")
-        return self.execute(execution_statement=truncate_statement)
+        self.execute(execution_statement=truncate_statement)
+        self.__connection.commit()
 
     def init_database(self):
         init_statement = self.read_sql_file("./src/backup/database/create_tables.sql")
         self.truncate_database(self.__connection)
-        return self.execute(execution_statement=init_statement)
+        self.execute(execution_statement=init_statement)
+        self.__connection.commit()
     
     def readDataSetById(self, id):
         sql_statement = ''' SELECT * FROM results WHERE id=''' + str(id) + ''' '''

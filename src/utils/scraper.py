@@ -20,6 +20,9 @@ class Scraper:
         self.__weblib = self.__WebLib.URLLIB
 
         self.__html = self.openurl(self.__url, self.__decoding)
+
+    def __del__(self):
+        pass
         
     def openurl(self, url=None, decoding=None):
         if url is None:
