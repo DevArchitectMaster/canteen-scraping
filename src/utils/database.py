@@ -1,6 +1,8 @@
 # https://docs.python.org/3/library/sqlite3.html
 import sqlite3
 
+NotImplementedErrorMessage = "\n\n\t\t\t### the CRUD operations are not implemented ###\t\t\n\t\t### please use 'read_data()' and 'write_data()' instead ###\t\t\n\n"
+
 class SQLite():
     def __init__(self, database, **kwargs):
         self.__database = database
@@ -44,14 +46,37 @@ class SQLite():
     def execute(self, execution_statement):
         return self.__cursor.execute(execution_statement)
     
+    ##################################################################################################################################
+    
+    def read_data(self, sql_statement):
+        self.__cursor.execute(sql_statement)
+        return self.__cursor.fetchall()
+    
     def write_data(self, sql_statement, values=None):
         if values is None:
             self.__cursor.execute(sql_statement)
         else:
             self.__cursor.execute(sql_statement, values)
         self.__connection.commit()
-        #results = self.__connection.fetchall()
         return self.__cursor.lastrowid
+    
+    ##################################################################################################################################
+
+    # Create
+    def create(self, sql_statement, values=None):
+        raise NotImplementedError(NotImplementedErrorMessage)
+
+    # Read
+    def read(self, sql_statement):
+        raise NotImplementedError(NotImplementedErrorMessage)
+    
+    # Update
+    def update(self, sql_statement, values=None):
+        raise NotImplementedError(NotImplementedErrorMessage)
+    
+    # Delete
+    def delete(self, sql_statement):
+        raise NotImplementedError(NotImplementedErrorMessage)
     
     ##################################################################################################################################
     #                                                                                                                                #
@@ -70,7 +95,7 @@ class SQLite():
     
     def readDataSetById(self, id):
         sql_statement = ''' SELECT * FROM results WHERE id=''' + str(id) + ''' '''
-        return self.execute(execution_statement=sql_statement)
+        return self.read_data(sql_statement=sql_statement)
     
     def write_scraped_line(self, values):
         sql_statement = ''' INSERT INTO results(scrapling_timestamp, intended_date, courses_type, label, ingredients, icons, price_students, price_staff, price_guests, price_special_fare) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '''
