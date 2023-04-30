@@ -2,4 +2,4 @@
 __pycache__/
 
 # production database
-/src/database.sqlite3
+src/database.sqlite3
