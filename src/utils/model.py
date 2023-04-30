@@ -124,16 +124,6 @@ class CannteenModel(Model):
         json_object = self.__checkHierarchical(hierarchical=hierarchical)
         line = json.dumps(obj=json_object, indent=4)
         print(line)
-    
-    """
-    def save(self):
-        #TODO
-        pass
-    
-    def getById(self, id):
-        #TODO
-        return None
-    """
 
     def convertToJson(self, hierarchical=False):
         json_object = self.__checkHierarchical(hierarchical=hierarchical)
