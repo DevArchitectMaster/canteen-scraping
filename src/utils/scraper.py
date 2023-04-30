@@ -8,16 +8,21 @@ from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 
 class Scraper:
-    class __WebLib(enum.Enum):
-        URLLIB = "URLLIB"
-        REQUESTS = "REQUESTS"
+    class __SCRAPER_LIB(enum.Enum):
+        URLLIB = "urllib"
+        REQUESTS = "requests"
 
-    def __init__(self, url, pattern={}, decoding="utf-8", **kwargs):
+    class __PARSER_LIB(enum.Enum):
+        REGULAR_EXPRESSION = "regular expression"
+        HTML_PARSER = "HTMLParser"
+        BEAUTIFULSOUP4 = "BeautifulSoup4"
+
+    def __init__(self, url, decoding="utf-8", scraper=__SCRAPER_LIB.REQUESTS, parser=__PARSER_LIB.HTML_PARSER, **kwargs):
         self.__url = url
-        self.__pattern = pattern
         self.__decoding = decoding
 
-        self.__weblib = self.__WebLib.URLLIB
+        self.__scraper = scraper
+        self.__parser = parser
 
         self.__html = self.openurl(self.__url, self.__decoding)
 
@@ -30,33 +35,34 @@ class Scraper:
         if decoding is None:
             decoding = self.__decoding
 
-        if self.__weblib == self.__WebLib.URLLIB:
-          self.__html = self.gethtmlByUrllib(url, decoding)
-        elif self.__weblib == self.__WebLib.REQUESTS:
-          self.__html = self.gethtmlByRequest(url, decoding)
-
-        self.__beautifulSoup = BeautifulSoup(self.__html, "html.parser")
+        if self.__scraper == self.__SCRAPER_LIB.URLLIB:
+          self.__html = self.__gethtmlByUrllib(url, decoding)
+        elif self.__scraper == self.__SCRAPER_LIB.REQUESTS:
+          self.__html = self.__gethtmlByRequest(url, decoding)
         
         return self.__html
     
-    def gethtml(self):
+    def getScraper(self):
+        return self.__scraper
+    
+    def getParser(self):
+        return self.__parser
+    
+    def getDecoding(self):
+        return self.__decoding
+    
+    def getUrl(self):
+        return self.__url
+
+    def getHtml(self):
         return self.__html
     
-    def gethtmlByUrllib(self, url, decoding):
-        self.__page = urlopen(url)
-        self.__html_bytes = self.__page.read()
-        self.__html = self.__html_bytes.decode(decoding)
-        return self.__html
+    def parse(self):
+        #TODO
+        pass
     
-    def gethtmlByRequest(self, url, decoding):
-        response = requests.get(url)
-        if response.status_code != 200:
-            print("Error fetching page")
-            exit()
-        else:
-            self.__html = response.content
-        return self.__html
-    
+
+
     """
     def findall(self, regex_pattern=None):
         if regex_pattern is None:
@@ -76,3 +82,59 @@ class Scraper:
 
     def getContentByCSS(self, css_selector):        
         return self.__beautifulSoup.select(css_selector)
+    
+
+
+    ########################################################   S C R A P E R   #######################################################
+    
+    ##################################################################################################################################
+    #                                                                                                                                #
+    #                                                        urllib methods                                                          #
+    #                                                                                                                                #
+    ##################################################################################################################################
+    
+    def __gethtmlByUrllib(self, url, decoding):
+        page = urlopen(url)
+        html_bytes = page.read()
+        html = html_bytes.decode(decoding)
+        return html
+    
+    ##################################################################################################################################
+    #                                                                                                                                #
+    #                                                      requests methods                                                          #
+    #                                                                                                                                #
+    ##################################################################################################################################
+    
+    def __gethtmlByRequest(self, url, decoding):
+        response = requests.get(url)
+        if response.status_code != 200:
+            print("Error fetching page")
+            exit()
+        else:
+            html = response.content
+        return html
+    
+    ##########################################################   P A R S E R   #######################################################
+
+    # https://requests.readthedocs.io/projects/requests-html/en/latest/
+    #TODO: dynamic websit parsing with 'requests-html' or 'selenium'
+    
+    ##################################################################################################################################
+    #                                                                                                                                #
+    #                                                  regular expression methods                                                    #
+    #                                                                                                                                #
+    ##################################################################################################################################
+
+    ##################################################################################################################################
+    #                                                                                                                                #
+    #                                                   BeautifulSoup methods                                                        #
+    #                                                                                                                                #
+    ##################################################################################################################################
+
+    ##################################################################################################################################
+    #                                                                                                                                #
+    #                                                    HTMLParser methods                                                          #
+    #                                                                                                                                #
+    ##################################################################################################################################
+    
+    pass
