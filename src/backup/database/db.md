@@ -20,7 +20,7 @@ ingredients
     //(2, 16, 17, c, g, i, a1)
 icons
     //icon-blaetter
-    => TODO?!
+    => ENUM...
 price_students
     //2,40
 price_staff
