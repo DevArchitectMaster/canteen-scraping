@@ -33,7 +33,6 @@ class SQLite():
         return self.__connection
 
     def close(self):
-        #TODO:
         #self.__cursor.close()
         self.__connection.close()
 
