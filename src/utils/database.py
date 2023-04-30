@@ -5,6 +5,7 @@ class SQLite():
     def __init__(self, database, **kwargs):
         self.__database = database
         self.__connection = self.connect(self.__database)
+        self.__cursor = self.__connection.cursor()
 
     def connect(self, database=None):
         """ create a database connection to the SQLite database specified by db_file
@@ -20,9 +21,10 @@ class SQLite():
             self.__connection = sqlite3.connect(database)
         except sqlite3.Error as e:
             print(e)
+            exit()
 
         return self.__connection
-    
+
     def close(self):
         self.__connection.close()
 
@@ -34,19 +36,17 @@ class SQLite():
             file.close()
         return file_content
 
-    def execute(self, execution_statement):        
-        db_cursor = self.__connection.cursor()
-        return db_cursor.execute(execution_statement)
+    def execute(self, execution_statement):
+        return self.__cursor.execute(execution_statement)
     
-    def write_data(self, sql_statement, values=None):        
-        db_cursor = self.__connection.cursor()
+    def write_data(self, sql_statement, values=None):
         if values is None:
-            db_cursor.execute(sql_statement)
+            self.__cursor.execute(sql_statement)
         else:
-            db_cursor.execute(sql_statement, values)
+            self.__cursor.execute(sql_statement, values)
         self.__connection.commit()
         #results = self.__connection.fetchall()
-        return db_cursor.lastrowid
+        return self.__cursor.lastrowid
     
     ##################################################################################################################################
     #                                                                                                                                #
