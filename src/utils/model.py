@@ -156,12 +156,12 @@ class CannteenModel(Model):
     def exportToDatabase(self):
         columns = ""
         values = ""
-        
+
         for key, value in self.__update_cannteen_object_linear().items():
             if key is "id":
                 continue
             columns = columns + str(key) + ", "
             values = values + str(value) + ", "
             
-        sql_statement = ''' INSERT INTO results(''' + columns[:-2] + ''') VALUES(''' + values[:-2] + ''') '''
+        sql_statement = ''' INSERT INTO results (''' + columns[:-2] + ''') VALUES (''' + values[:-2] + ''') '''
         return sql_statement

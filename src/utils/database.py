@@ -91,7 +91,7 @@ class SQLite():
     
     ##################################################################################################################################
     #                                                                                                                                #
-    #                                                      specific methods                                                          #
+    #                                                   specific model methods                                                       #
     #                                                                                                                                #
     ##################################################################################################################################
 
@@ -109,5 +109,5 @@ class SQLite():
         return self.read_data(sql_statement=sql_statement, columns=columns)
     
     def write_scraped_line(self, values):
-        sql_statement = ''' INSERT INTO results(scrapling_timestamp, intended_date, courses_type, label, ingredients, icons, price_students, price_staff, price_guests, price_special_fare) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '''
+        sql_statement = ''' INSERT INTO results (scrapling_timestamp, intended_date, courses_type, label, ingredients, icons, price_students, price_staff, price_guests, price_special_fare) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '''
         return self.write_data(sql_statement=sql_statement, values=values)
