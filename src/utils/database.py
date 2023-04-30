@@ -61,14 +61,12 @@ class SQLite():
 
     def truncate_database(self):
         truncate_statement = self.read_sql_file("./src/backup/database/truncate_database.sql")
-        self.execute(execution_statement=truncate_statement)
-        self.__connection.commit()
+        self.write_data(sql_statement=truncate_statement)
 
     def init_database(self):
         init_statement = self.read_sql_file("./src/backup/database/create_tables.sql")
         self.truncate_database(self.__connection)
-        self.execute(execution_statement=init_statement)
-        self.__connection.commit()
+        self.write_data(sql_statement=init_statement)
     
     def readDataSetById(self, id):
         sql_statement = ''' SELECT * FROM results WHERE id=''' + str(id) + ''' '''
