@@ -126,7 +126,7 @@ class SQLite():
 
     def readDataSetById(self, id, columns=False):
         sql_statement = ''' SELECT * FROM results WHERE id=''' + str(id) + ''' '''
-        return self.read_data(sql_statement=sql_statement, columns=columns)
+        return self.read_data(sql_statement=sql_statement, columns=columns)[0]
     
     def write_scraped_line(self, values):
         sql_statement = ''' INSERT INTO results (scrapling_timestamp, intended_date, courses_type, label, ingredients, icons, price_students, price_staff, price_guests, price_special_fare) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) '''
