@@ -1,6 +1,5 @@
 import os
 import pathlib
-import json
 
 from utils.scraper import Scraper as Scraper
 from utils.parser import Parser as Parser
@@ -17,8 +16,7 @@ dataobject.pop("id")
 ##################################################################################################################################
 
 database_path = str(pathlib.Path("src/database.sqlite3").absolute())
-#url = "https://www.studentenwerk-oberfranken.de/essen/speiseplaene/coburg/hauptmensa.html"
-url = "http://fboeck.de/mensa"
+url = "http://felix-boeck.de"
 
 ##################################################################################################################################
 #                                                                                                                                #
