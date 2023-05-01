@@ -50,12 +50,12 @@ class CannteenModel(Model):
         self.price_guests = price_guests
         self.price_special_fare = price_special_fare
 
-        self.cannteen_object_linear = self.__update_cannteen_object_linear()
-        
-        self.cannteen_object_hierarchical = self.__update_cannteen_object_hierarchical()
-
     def __del__(self):
         pass
+    
+    def _getAllClassAttributes(self):
+        #return [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
+        return self.__dict__.keys()
 
     ##################################################################################################################################
     #                                                                                                                                #
@@ -69,15 +69,18 @@ class CannteenModel(Model):
     def __repr__(self):
         return self.__str__()
     def __str__(self):
-        return str(self.__update_cannteen_object_linear())
+        return str(self.__get_cannteen_object_linear())
 
     ##################################################################################################################################
     #                                                                                                                                #
     #                                                      specific methods                                                          #
     #                                                                                                                                #
     ##################################################################################################################################
+
+    def _getModelAsDict(self):
+        return self.__get_cannteen_object_linear()
     
-    def __update_cannteen_object_linear(self):
+    def __get_cannteen_object_linear(self):
         return {
             "id" : self.id,
             "scrapling_timestamp" : self.scrapling_timestamp,
@@ -92,7 +95,7 @@ class CannteenModel(Model):
             "price_special_fare" : self.price_special_fare
         }
     
-    def __update_cannteen_object_hierarchical(self):
+    def __get_cannteen_object_hierarchical(self):
         return {
             "id" : self.id,
             "scrapling_timestamp" : self.scrapling_timestamp,
@@ -113,21 +116,21 @@ class CannteenModel(Model):
 
     def __checkHierarchical(self, hierarchical=False):
         if hierarchical is True:
-            json_object = self.__update_cannteen_object_hierarchical()
+            json_object = self.__get_cannteen_object_hierarchical()
         else:
-            json_object = self.__update_cannteen_object_linear()
+            json_object = self.__get_cannteen_object_linear()
         return json_object
     
     ##################################################################################################################################
 
     def print(self, hierarchical=False):
         json_object = self.__checkHierarchical(hierarchical=hierarchical)
-        line = json.dumps(obj=json_object, indent=4)
+        line = json.dumps(obj=json_object, separators=(',', ':'), indent=4)
         print(line)
 
     def convertToJson(self, hierarchical=False):
         json_object = self.__checkHierarchical(hierarchical=hierarchical)
-        return json.dumps(json_object)
+        return json.dumps(json_object, separators=(',', ':'))
     
     def convertToDict(self, json_object):
         return json.loads(json_object)
@@ -147,11 +150,11 @@ class CannteenModel(Model):
         columns = ""
         values = ""
 
-        for key, value in self.__update_cannteen_object_linear().items():
-            if key is "id":
+        for key, value in self.__get_cannteen_object_linear().items():
+            if key == "id":
                 continue
-            columns = columns + str(key) + ", "
-            values = values + str(value) + ", "
+            columns = columns + "'" + str(key) + "'" + ", "
+            values = values + "'" + str(value) + "'" + ", "
             
         sql_statement = ''' INSERT INTO results (''' + columns[:-2] + ''') VALUES (''' + values[:-2] + ''') '''
         return sql_statement
