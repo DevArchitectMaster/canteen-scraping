@@ -132,7 +132,7 @@ class CannteenModel(Model):
     def convertToDict(self, json_object):
         return json.loads(json_object)
     
-    def importFromDatabase(self, datarow):
+    def importModel(self, datarow):
         for key, value in datarow.items():
             if isinstance(value, int):
                 exec_command = 'self.%s = %d'
@@ -143,7 +143,7 @@ class CannteenModel(Model):
             
             exec(exec_command % (key, value))
     
-    def exportToDatabase(self):
+    def exportModel(self):
         columns = ""
         values = ""
 
