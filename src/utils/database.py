@@ -15,14 +15,14 @@ class SQLite():
     def __del__(self):
         self.close()
 
-    def connect(self, database=None):
-        """ create a database connection to the SQLite database specified by db_file
-        :param db_file: database file
-        :return: Connection object or None (if error)
-        """
+    def importDatabase(self, database):
         if database is not None:
             self.__database = database
-        
+
+    def connect(self):
+        """ create a database connection to the SQLite database specified by db_file
+        :return: Connection object or None (if error)
+        """        
         try:
             self.__connection = sqlite3.connect(self.__database)
         except sqlite3.Error as e:
