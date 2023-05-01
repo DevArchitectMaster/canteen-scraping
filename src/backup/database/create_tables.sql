@@ -1,4 +1,4 @@
-CREATE TABLE "results" (
+CREATE TABLE IF NOT EXISTS "results" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"scrapling_timestamp"	TEXT NOT NULL,
 	"intended_date"	TEXT NOT NULL,
