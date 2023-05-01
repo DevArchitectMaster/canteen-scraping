@@ -143,7 +143,7 @@ if __name__ == '__main__':
     print(id)
     
     # read
-    datarow = database.readDataSetById(id=id, columns=True)[0]
+    datarow = database.readDataSetById(id=id, columns=True)
     print(datarow)
   
     # close
