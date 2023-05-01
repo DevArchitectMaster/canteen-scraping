@@ -78,15 +78,22 @@ if __name__ == '__main__':
 
     ############# TODO: edit from here ############
 
-    ################# Hauptgerichte ###############
+    ###################### HTML ###################
 
-    mainCourses_CSS = "div.tx-bwrkspeiseplan__hauptgerichte:nth-child(7) > div:nth-child(1) > div:nth-child(1)"
-    mainCourses_CSS = ".tx-bwrkspeiseplan__hauptgerichte > .row > .col-xs-12"
+    # choose selector wisely
+    meals_CSS_Selector = "div.tx-bwrkspeiseplan__hauptgerichte:nth-child(7) > div:nth-child(1) > div:nth-child(1)" # ".tx-bwrkspeiseplan__hauptgerichte > .row > .col-xs-12"
     # table[class*='tx-bwrkspeiseplan__']
 
     # select specific html content with css selector
-    html_mainCourses = parser.getContentByCSS(mainCourses_CSS)
-    #print(html_mainCourses)
+    meals_html = parser.getContentByCSS(meals_CSS_Selector)
+
+    # limitation of html
+    parser.loadhtml(meals_html)
+
+    ################# Hauptgerichte ###############
+
+    hauptgerichte_CSS_Selector = "div[class*='tx-bwrkspeiseplan__hauptgerichte']"
+    hauptgerichte_html = parser.getContentByCSS(hauptgerichte_CSS_Selector)
 
     # fill emtpy vars with content
     dataobject["scrapling_timestamp"] = "2022-05-01 12:00:00"
@@ -110,13 +117,23 @@ if __name__ == '__main__':
 
     #################### Beilagen #################
 
+    beilagen_CSS_Selector = "div[class*='tx-bwrkspeiseplan__beilagen']"
+
     ################## Nachspeisen ################
+
+    desserts_CSS_Selector = "div[class*='tx-bwrkspeiseplan__desserts']"
 
     ################# Snack & Salat ###############
 
+    salatsuppen_CSS_Selector = "div[class*='tx-bwrkspeiseplan__salatsuppen']"
+
     ##################### Nudeln ##################
 
+    nudeln_CSS_Selector = "div[class*='tx-bwrkspeiseplan__nudeln']"
+
     ########### Abendkarte (ab 16:00 Uhr) #########
+
+    abendkarte_CSS_Selector = "div[class*='tx-bwrkspeiseplan__abendkarte']"
 
 
 
