@@ -5,33 +5,38 @@ NotImplementedErrorMessage = "\n\n\t\t\t### the CRUD operations are not implemen
 
 class SQLite():
     def __init__(self, database=None, **kwargs):
-        self.__database = self.__check_database(database)
-        self.__connection = self.connect(self.__database)
-        self.__cursor = self.__connection.cursor()
+        if database is None:
+            self.__database = ":memory:"
+        else:
+            self.__database = database
+        #self.__connection = self.connect(self.__database)
+        #self.__cursor = self.__connection.cursor()
 
     def __del__(self):
         self.close()
 
-    def __check_database(self, database=None):
-        if database is None:
-            database = ":memory:"
-        return database
-
     def connect(self, database=None):
         """ create a database connection to the SQLite database specified by db_file
         :param db_file: database file
-        :return: Connection object or None
+        :return: Connection object or None (if error)
         """
-        self.__database = self.__check_database(database)
+        if database is not None:
+            self.__database = database
         
         try:
-            self.__connection = sqlite3.connect(database)
+            self.__connection = sqlite3.connect(self.__database)
+        except sqlite3.Error as e:
+            print(e)
+            exit()
+
+        try:
+            self.__cursor = self.__connection.cursor()
         except sqlite3.Error as e:
             print(e)
             exit()
 
         return self.__connection
-
+        
     def close(self):
         #self.__cursor.close()
         self.__connection.close()
@@ -95,16 +100,30 @@ class SQLite():
     #                                                                                                                                #
     ##################################################################################################################################
 
+    def init_database(self):
+        self.__created_database()
+        self.truncate_database()
+        self.__created_tables()
+        self.truncate_tables()
+    
+    def __created_database(self):
+        #TODO: create DB if not exist
+        pass
+
     def truncate_database(self):
         truncate_statement = self.read_sql_file(file="./src/backup/database/truncate_database.sql")
         self.write_data(sql_statement=truncate_statement)
 
-    def init_database(self):
-        #TODO: create DB if not exist
+    def __created_tables(self):
         init_statement = self.read_sql_file(file="./src/backup/database/create_tables.sql")
-        self.truncate_database()
         self.write_data(sql_statement=init_statement)
-    
+
+    def truncate_tables(self):
+        truncate_statement = self.read_sql_file(file="./src/backup/database/truncate_tables.sql")
+        self.write_data(sql_statement=truncate_statement)
+
+    ##################################################################################################################################
+
     def readDataSetById(self, id, columns=False):
         sql_statement = ''' SELECT * FROM results WHERE id=''' + str(id) + ''' '''
         return self.read_data(sql_statement=sql_statement, columns=columns)
