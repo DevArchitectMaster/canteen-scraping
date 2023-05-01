@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS "results" (
 	"price_guests"	REAL NOT NULL,
 	"price_special_fare"	REAL NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
-)
+);
