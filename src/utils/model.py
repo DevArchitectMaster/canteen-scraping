@@ -1,3 +1,6 @@
+from utils.logger import Logger as Logger
+logger = Logger().set_logger(loggername=__name__ + '.Model').get_logger()
+
 import enum
 import json
 
@@ -49,12 +52,14 @@ class CannteenModel(Model):
         self.price_staff = price_staff
         self.price_guests = price_guests
         self.price_special_fare = price_special_fare
+        logger.debug("Model Object created")
 
     def __del__(self):
         pass
     
     def _getAllClassAttributes(self):
         #return [attr for attr in dir(self) if not callable(getattr(self, attr)) and not attr.startswith("__")]
+        logger.debug("get all class attributes")
         return self.__dict__.keys()
 
     ##################################################################################################################################
@@ -68,6 +73,7 @@ class CannteenModel(Model):
 
     def __repr__(self):
         return self.__str__()
+
     def __str__(self):
         return str(self.__get_cannteen_object_linear())
 
@@ -77,10 +83,12 @@ class CannteenModel(Model):
     #                                                                                                                                #
     ##################################################################################################################################
 
-    def _getModelAsDict(self):
+    def _get_model_as_dict(self):
+        logger.debug("return model as dict")
         return self.__get_cannteen_object_linear()
     
     def __get_cannteen_object_linear(self):
+        logger.debug("return model as linear object")
         return {
             "id" : self.id,
             "scrapling_timestamp" : self.scrapling_timestamp,
@@ -96,6 +104,7 @@ class CannteenModel(Model):
         }
     
     def __get_cannteen_object_hierarchical(self):
+        logger.debug("return model as hierarchical object")
         return {
             "id" : self.id,
             "scrapling_timestamp" : self.scrapling_timestamp,
@@ -114,28 +123,33 @@ class CannteenModel(Model):
             }
         }
 
-    def __checkHierarchical(self, hierarchical=False):
+    def __check_hierarchical(self, hierarchical=False):
         if hierarchical is True:
             json_object = self.__get_cannteen_object_hierarchical()
         else:
             json_object = self.__get_cannteen_object_linear()
+        logger.debug("return model as json object")
         return json_object
     
     ##################################################################################################################################
 
     def print(self, hierarchical=False):
-        json_object = self.__checkHierarchical(hierarchical=hierarchical)
+        json_object = self.__check_hierarchical(hierarchical=hierarchical)
         line = json.dumps(obj=json_object, separators=(',', ':'), indent=4)
+        logger.debug("print model")
         print(line)
+        return self
 
-    def convertToJson(self, hierarchical=False):
-        json_object = self.__checkHierarchical(hierarchical=hierarchical)
+    def convert_to_json(self, hierarchical=False):
+        json_object = self.__check_hierarchical(hierarchical=hierarchical)
+        logger.debug("convert model to json object")
         return json.dumps(json_object, separators=(',', ':'))
     
-    def convertToDict(self, json_object):
+    def convert_to_dict(self, json_object):
+        logger.debug("convert model to dict object")
         return json.loads(json_object)
     
-    def importModel(self, datarow):
+    def import_model(self, datarow):
         for key, value in datarow.items():
             if isinstance(value, int):
                 exec_command = 'self.%s = %d'
@@ -145,8 +159,10 @@ class CannteenModel(Model):
                 exec_command = 'self.%s = "%s"'
             
             exec(exec_command % (key, value))
+        logger.debug("Model imported")
+        return self
     
-    def exportModel(self):
+    def export_model(self):
         columns = ""
         values = ""
 
@@ -157,4 +173,5 @@ class CannteenModel(Model):
             values = values + "'" + str(value) + "'" + ", "
             
         sql_statement = ''' INSERT INTO results (''' + columns[:-2] + ''') VALUES (''' + values[:-2] + ''') '''
+        logger.debug("Model exported ['%s']", sql_statement)
         return sql_statement

@@ -1,12 +1,15 @@
 import os
 import pathlib
 
+from utils.logger import Logger as Logger
+logger = Logger().set_logger(loggername=__name__ + '.Example').get_logger()
+
 from utils.scraper import Scraper as Scraper
 from utils.parser import Parser as Parser
 from utils.model import CannteenModel as Model
 from utils.database import SQLite as Database
 
-dataobject = Model()._getModelAsDict()
+dataobject = Model()._get_model_as_dict()
 dataobject.pop("id")
 
 ##################################################################################################################################
@@ -37,13 +40,16 @@ if __name__ == '__main__':
 
     # create scraper
     scraper = Scraper()
+    logger.info("create scraper")
 
     # init scraper
-    scraper.openurl(url)
+    scraper.open_url(url)
+    logger.info("open url: '%s'", url)
 
     # get HTML content
-    html = scraper.getHtml()
+    html = scraper.get_html()
     #print(html)
+    logger.debug("html code: '%s'", html)
 
     ##############################################################################################################################
     #                                                                                                                            #
@@ -56,13 +62,16 @@ if __name__ == '__main__':
 
     # create parser
     parser = Parser()
+    logger.info("create parser")
 
     # init parser
-    parser.loadhtml(html)
+    parser.load_html(html)
     #print(parser.getHtml())
+    logger.info("load html code")
 
     # parse html
     parser.parse()
+    logger.info("parse html code")
     
     ###############################################
     #                                             #
@@ -73,10 +82,10 @@ if __name__ == '__main__':
     ############# TODO: edit from here ############
 
     # choose selector wisely
-    mainCourses_CSS = "div.tx-bwrkspeiseplan__hauptgerichte:nth-child(7) > div:nth-child(1) > div:nth-child(1)"
+    css_selector = "div"
 
     # select specific html content with css selector
-    html_mainCourses = parser.getContentByCSS(mainCourses_CSS)
+    selected_html = parser.get_content_by_css(css_selector)
     #print(html_mainCourses)
 
     # fill emtpy vars with content
@@ -106,13 +115,16 @@ if __name__ == '__main__':
     # create model
     model = Model()
     print(model) # empty model
+    logger.info("create model: '%s'", model)
 
     # fill model
-    model.importModel(dataobject)
+    model.import_model(dataobject)
     print(model)
+    logger.info("import model: '%s'", model)
 
     # export model to db
-    export_content = model.exportModel()
+    export_content = model.export_model()
+    logger.info("export model to database: '%s'", export_content)
 
     ##############################################################################################################################
     #                                                                                                                            #
@@ -125,29 +137,37 @@ if __name__ == '__main__':
 
     # create database
     database = Database()
+    logger.info("create database")
 
     # open existing db, if desired & available
-    #database.importDatabase(database_path)
+    #database.import_database(database_path)
+    #logger.info("import database '%s'", database_path)
 
     # connect database
     database.connect()
+    logger.info("connect database")
 
     # init database & tables
     database.init_database()
+    logger.info("init database")
 
     # truncate
     #database.truncate_database() # not necessary if the database was initialised in the previous step
+    #logger.info("truncate database")
 
     # write
     id = database.write_data(sql_statement=export_content)
     print(id)
+    logger.info("write dataset to database with id='%s'", id)
     
     # read
-    datarow = database.readDataSetById(id=id, columns=True)
+    datarow = database.read_dataset_by_id(id=id, columns=True)
     print(datarow)
+    logger.info("read dataset from database with id='%s' : '%s'", id, datarow)
   
     # close
     database.close()
+    logger.debug("close database connection")
 
     ##############################################################################################################################
     #                                                                                                                            #

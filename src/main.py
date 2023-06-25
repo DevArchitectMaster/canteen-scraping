@@ -1,10 +1,25 @@
 import os
 import pathlib
 
+from utils.logger import Logger as Logger
 from utils.scraper import Scraper as Scraper
 from utils.parser import Parser as Parser
 from utils.model import CannteenModel as Model
 from utils.database import SQLite as Database
+
+os.chdir(os.getcwd() + ".\src")
+
+##################################################################################################################################
+#                                                                                                                                #
+#                                                         L O G G E R                                                            #
+#                                                                                                                                #
+##################################################################################################################################
+
+configfile = "logging.conf.json"
+logpath = "logs/"
+loggername = "__main__"
+
+logger = Logger().config(configfile=configfile, loggername=loggername, logpath=logpath).get_logger()
 
 ##################################################################################################################################
 #                                                                                                                                #
@@ -12,10 +27,10 @@ from utils.database import SQLite as Database
 #                                                                                                                                #
 ##################################################################################################################################
 
-dataobject = Model()._getModelAsDict()
+dataobject = Model()._get_model_as_dict()
 dataobject.pop("id")
 
-database_path = str(pathlib.Path("src/database.sqlite3").absolute())
+database_path = "database.sqlite3"
 #url = "https://www.studentenwerk-oberfranken.de/essen/speiseplaene/coburg/hauptmensa.html"
 url = "http://fboeck.de/mensa"
 
@@ -29,30 +44,41 @@ if __name__ == '__main__':
     ################## DATABASE ###################
     # create database
     database = Database()
+    logger.debug("create database")
     # open existing db, if desired & available
-    database.importDatabase(database_path)
+    database.import_database(database_path)
+    logger.debug("import database '%s'", database_path)
     # connect database
     database.connect()
+    logger.debug("connect database")
     # init database & tables
     #database.init_database()
+    #logger.debug("init database")
     # truncate
     #database.truncate_database() # not necessary if the database was initialised in the previous step
+    #logger.debug("truncate database")
 
     ################### SCRAPER ###################
     # create
     scraper = Scraper()
+    logger.debug("create scraper")
     # init scraper
-    scraper.openurl(url)
+    scraper.open_url(url)
+    logger.debug("open url: '%s'", url)
     # get HTML content
-    html = scraper.getHtml()
+    html = scraper.get_html()
+    logger.debug("html code: '%s'", html)
 
     ################### PARSER ####################
     # create
     parser = Parser()
+    logger.debug("create parser")
     # init parser
-    parser.loadhtml(html)
+    parser.load_html(html)
+    logger.debug("load html code")
     # parse html
     parser.parse()
+    logger.debug("parse html code")
 
 
 
@@ -66,6 +92,7 @@ if __name__ == '__main__':
     # create model
     model = Model()
     #print(model) # empty model
+    logger.debug("create model: '%s'", model)
     # ...
     # delete model
     #del model
@@ -85,15 +112,15 @@ if __name__ == '__main__':
     # table[class*='tx-bwrkspeiseplan__']
 
     # select specific html content with css selector
-    meals_html = parser.getContentByCSS(meals_CSS_Selector)
+    meals_html = parser.get_content_by_css(meals_CSS_Selector)
 
     # limitation of html
-    parser.loadhtml(meals_html)
+    parser.load_html(meals_html)
 
     ################# Hauptgerichte ###############
 
     hauptgerichte_CSS_Selector = "div[class*='tx-bwrkspeiseplan__hauptgerichte']"
-    hauptgerichte_html = parser.getContentByCSS(hauptgerichte_CSS_Selector)
+    hauptgerichte_html = parser.get_content_by_css(hauptgerichte_CSS_Selector)
 
     # fill emtpy vars with content
     dataobject["scrapling_timestamp"] = "2022-05-01 12:00:00"
@@ -108,9 +135,9 @@ if __name__ == '__main__':
     dataobject["price_special_fare"] = 2.60
 
     # fill model
-    model.importModel(dataobject)
+    model.import_model(dataobject)
     # export model to db
-    export_content = model.exportModel()
+    export_content = model.export_model()
     # write
     id = database.write_data(sql_statement=export_content)
     print(id)
@@ -157,5 +184,6 @@ if __name__ == '__main__':
   
     # close
     database.close()
+    logger.debug("close database connection")
 
     exit(0)
